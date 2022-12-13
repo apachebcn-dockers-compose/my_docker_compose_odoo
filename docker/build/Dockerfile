@@ -77,7 +77,7 @@ RUN pip3 install PyPDF2
 RUN pip3 install passlib
 RUN pip3 install babel
 RUN pip3 install decorator
-RUN pip3 install psycopg2
+RUN pip3 install psycopg2-binary
 RUN pip3 install Pillow
 RUN pip3 install psutil
 RUN pip3 install reportlab
