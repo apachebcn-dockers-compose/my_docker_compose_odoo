@@ -18,7 +18,7 @@ docker/build/customs_installs/requirements.txt
 
 docker/build/container_volumes/*/*
 
-volumes/*/*
+volumes/*
 !volumes/addons_me_default
 
 !.gitkeep
