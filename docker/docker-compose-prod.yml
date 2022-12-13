@@ -1,0 +1,82 @@
+#####################################################
+#
+# CREADO POR PEDRO REINA ROJAS (apachebcn@gmail.com)
+#
+#####################################################
+
+
+version: '2'
+services:
+
+  odoo:
+
+    container_name: ${CONTAINER_NAME}
+    build:
+      context: ./build
+      args:
+        - MODE=prod
+        - ODOO_VERSION=${ODOO_VERSION}
+    image: "${CONTAINER_NAME}-image"
+    depends_on:
+      - odoo-db
+    links:
+      - odoo-db
+    hostname: ${ODOO_HOSTNAME}
+    ports:
+      - 0.0.0.0:${EXPOSE_PUBLIC_PORT_ODOO}:8069
+    volumes:
+      - ../volumes/var_run/:/var/run/
+      - ../volumes/data/odoo-web-data:/home/odoo/odoo-web-data/
+      - ../volumes/addons_me:/home/odoo/odoo-app/addons_me
+    tty: true
+    restart: always
+    command: --log-level=${ODOO_LOG_MODE}
+    environment:
+      - EXPOSE_PUBLIC_PORT_ODOO=${EXPOSE_PUBLIC_PORT_ODOO}
+      - MODE=prod
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - CONTAINER_NAME=${CONTAINER_NAME}
+
+
+  odoo-db:
+
+    container_name: ${CONTAINER_NAME}-db
+    image: postgres:${POSTGRES_VERSION}
+    environment:
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - 0.0.0.0:${EXPOSE_PUBLIC_PORT_DB}:5432
+    volumes:
+      - ../volumes/var_run/:/var/run/
+      - ../volumes/data/db-data:/var/lib/postgresql/data/pgdata
+    restart: always
+
+
+  # Comentar o Descomentar si queremos el servicio pgadmin
+  # odoo-pgadmin:
+
+  #     container_name: ${CONTAINER_NAME}-pgadmin
+  #     image: dpage/pgadmin4
+  #     depends_on:
+  #         - odoo-db
+  #     links:
+  #         - odoo-db
+  #     restart: always
+  #     ports:
+  #         - 0.0.0.0:${EXPOSE_PUBLIC_PGADMIN_PORT}:80
+  #     volumes:
+  #         - ../volumes/var_run/:/var/run/
+  #         - ../volumes/pgadmin:/root/.pgadmin
+  #     environment:
+  #         - DB_HOST=odoo-db
+  #         - DB_PORT=5432
+  #         - DB_NAME=${DB_NAME}
+  #         - DB_USER=${DB_USER}
+  #         - DB_PASSWORD=${DB_PASSWORD}
+  #         - PGADMIN_DEFAULT_EMAIL=admin@admin.es
+  #         - PGADMIN_DEFAULT_PASSWORD=admin

@@ -1,0 +1,65 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.217.1/containers/docker-existing-docker-compose
+// If you want to run as a non-root user in the container, see .devcontainer/docker-compose.yml.
+{
+      "name": "Devcontainer Odoo",
+      // Update the 'dockerComposeFile' list if you have more compose files or use different names.
+      // The .devcontainer/docker-compose.yml file contains any overrides you need/want to make.
+      "dockerComposeFile": [
+            "../docker/docker-compose-dev.yml"
+      ],
+      // The 'service' property is the name of the service for the container that VS Code should
+      // use. Update this value and .devcontainer/docker-compose.yml to the real service name.
+      "service": "odoo",
+      // The optional 'workspaceFolder' property is the path VS Code should open by default when
+      // connected. This is typically a file mount in .devcontainer/docker-compose.yml
+      "workspaceFolder": "/home/odoo/odoo-app",
+      // Set *default* container specific settings.json values on container create.
+      "settings": {
+            "python.pythonPath": "/usr/local/bin/python"
+            "git.enabled": false,  // Deshabilito git porque hace lectura de todos los gits de todas las carpetas y hace sobrecarga
+            "git.path": null,
+            "git.autofetch": false,
+            "python.linting.flake8Enabled": true,
+            "flake8.args": [  // Excluyo del analysis de Flake 8 las siguientes carpetas
+                "--exclude=odoo/*,addons/*,addons_extra/*,addons_enterprise/*,addons_oca/*"
+            ]
+            // Los settings de la carpeta del proyecto aplicarán junta a este
+      },
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+            "ms-ceintl.vscode-language-pack-es",
+            "visualstudioexptteam.vscodeintellicode",
+            "ms-python.python",
+            "donjayamanne.python-environment-manager",
+            "donjayamanne.python-extension-pack",
+            "magicstack.magicpython",
+            "kevinrose.vsc-python-indent",
+            "wayou.vscode-todo-highlight",
+            "rangav.vscode-thunder-client",
+            "formulahendry.auto-rename-tag",
+            "vscode-icons-team.vscode-icons",
+            "aaron-bond.better-comments",
+            "ms-azuretools.vscode-docker",
+            "ms-python.flake8",
+            "scapigliato.odoo-snippets",
+            "lgallo.odoo-snippets",
+            "scapigliato.vsc-odoo-development",
+            "DotJoshJohnson.xml"
+      ],
+      "remoteEnv": {
+            "PATH": "${containerEnv:PATH}"
+      }
+      // // The 'service' property is the name of the service for the container that VS Code should
+      // use. Update this value and .devcontainer/docker-compose.yml to the real service name.
+      // Use 'forwardPorts' to make a list of ports inside the container available locally.
+      // "forwardPorts": [],
+      // Uncomment the next line if you want start specific services in your Docker Compose config.
+      // "runServices": [],
+      // Uncomment the next line if you want to keep your containers running after VS Code shuts down.
+      // "shutdownAction": "stopCompose",
+      // Uncomment the next line to run commands after the container is created - for example installing curl.
+      // "postCreateCommand": "apt-get update && apt-get install -y curl",
+      // Uncomment to connect as a non-root user if you've added one. See https://aka.ms/vscode-remote/containers/non-root.
+      // "remoteUser": "vscode"
+}
