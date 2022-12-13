@@ -62,7 +62,6 @@ odoobin="/home/odoo/odoo-app/odoo-bin"
 if [ $DEBUG_PTVSD == 1 ]
 then
     odoobin="/home/odoo/odoo-app/odoo-bin-debug"
-    chmod +x $odoobin 
 fi
 
 
