@@ -56,16 +56,16 @@ odoo_etc_show: ## Mostrar odoo.conf desde el contenedor de odoo
 	@docker exec -u root -ti ${CONTAINER_NAME} cat /home/odoo/odoo-app/etc/odoo.conf
 
 odoo_update_module: ## odoo actualizar 1 modulo (especificar nombre de base de datos <db> y de módulo <module>)
-	@echo "help: make odoo_update_module db={database} module={nombre}"<br>
+	@echo "help: make odoo_update_module db={database} module={nombre}<br>"
 	docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83 -u $(module)
 
 odoo_update_all_modules: ## odoo actualizar todos los módulos
-	@echo "help: make odoo_update_module db={database}"<br>
+	@echo "help: make odoo_update_module db={database}<br>"
 	@docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin -u all -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83
 
-odoo_scafold: ## odoo crear nuevo modulo
-	@echo "help: odoo crear nuevo modulo db={database}"<br>
-	@docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin scaffold -d ${db} /home/odoo/odoo-app/addons_me/amplus_cash
+odoo_scaffold: ## odoo crear nuevo modulo
+	@echo "help: odoo crear nuevo modulo={modulo}<br>"
+	@docker exec -u odoo -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin scaffold /home/odoo/odoo-app/addons_me/${modulo}
 
 psql_bash: ## Bash en contenedor mysql
 	@docker exec -u postgres -ti ${CONTAINER_NAME}_db bash
