@@ -48,24 +48,20 @@ odoo_bash: ## Bash en contenedor odoo
 odoo_bash_root: ## Bash en contenedor odoo as root user
 	@docker exec -u root -ti ${CONTAINER_NAME} bash
 
-odoo_shell: ## odoo shell (especificar nombre de base de datos)
-	@echo "help: make odoo_shell db={database}"
-	@docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin shell -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83
+odoo_shell: ## odoo shell. SINTAXIS: make odoo_shell db={database}
+	@if [-v database]; then docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin shell -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83; fi
 
 odoo_etc_show: ## Mostrar odoo.conf desde el contenedor de odoo
 	@docker exec -u root -ti ${CONTAINER_NAME} cat /home/odoo/odoo-app/etc/odoo.conf
 
-odoo_update_module: ## odoo actualizar 1 modulo (especificar nombre de base de datos <db> y de módulo <module>)
-	@echo "help: make odoo_update_module db={database} module={nombre}<br>"
-	docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83 -u $(module)
+odoo_update_module: ## odoo actualizar 1 modulo. SINTAXIS: make odoo_update_module db={database} module={nombre}
+	@if [-v database]; then docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83 -u $(module); fi
 
-odoo_update_all_modules: ## odoo actualizar todos los módulos
-	@echo "help: make odoo_update_module db={database}<br>"
-	@docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin -u all -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83
+odoo_update_all_modules: ## odoo actualizar todos los módulos. SINTAXIS: make odoo_update_module db={database}
+	@if [-v database]; then docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin -u all -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83; fi
 
-odoo_scaffold: ## odoo crear nuevo modulo
-	@echo "help: odoo crear nuevo modulo={modulo}<br>"
-	@docker exec -u odoo -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin scaffold /home/odoo/odoo-app/addons_me/${modulo}
+odoo_scaffold: ## odoo crear nuevo modulo. SINTAXIS: make odoo_scaffold modulo={modulo}
+	@if [ -v modulo ]; then docker exec -u odoo -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin scaffold /home/odoo/odoo-app/addons_me/${modulo}; fi
 
 psql_bash: ## Bash en contenedor mysql
 	@docker exec -u postgres -ti ${CONTAINER_NAME}_db bash
