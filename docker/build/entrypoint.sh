@@ -2,7 +2,7 @@
 
 set -e
 
-if [[ -e /home/odoo/odoo-app/addons_me/.vscode ]]
+if [ -e /home/odoo/odoo-app/addons_me/.vscode ]
 then
     echo "copiando /home/odoo/odoo-app/addons_me/.vscode a /home/odoo/odoo-app (para devcontainer)"
     cp -r /home/odoo/odoo-app/addons_me/.vscode /home/odoo/odoo-app
@@ -11,7 +11,7 @@ fi
 
 if [ "${MODE}" = "prod" ]
 then
-    if [[ -f ${ODOO_ETC_PATH}/odoo.prod.conf ]]
+    if [ -f ${ODOO_ETC_PATH}/odoo.prod.conf ]
     then
         cp ${ODOO_ETC_PATH}/odoo.prod.conf ${ODOO_ETC_FILE}
     else
@@ -24,7 +24,7 @@ then
         echo ""
     fi
 else
-    if [[ -f ${ODOO_ETC_PATH}/odoo.dev.conf ]]
+    if [ -f ${ODOO_ETC_PATH}/odoo.dev.conf ]
     then
         cp ${ODOO_ETC_PATH}/odoo.dev.conf ${ODOO_ETC_FILE}
     else
@@ -59,7 +59,7 @@ echo ""
 
 
 odoobin="/home/odoo/odoo-app/odoo-bin"
-if [[ $DEBUG_PTVSD == 1 ]]
+if [ $DEBUG_PTVSD == 1 ]
 then
     odoobin="/home/odoo/odoo-app/odoo-bin-debug"
     chmod +x $odoobin 
@@ -67,7 +67,7 @@ fi
 
 
 command="$odoobin $@"
-if [[ -f $ODOO_ETC_FILE ]]
+if [ -f $ODOO_ETC_FILE ]
 then
     command="$command --config=$ODOO_ETC_FILE"
 else
@@ -82,7 +82,7 @@ command="$command --db_password $PASSWORD"
 
 echo "exec $command"
 
-if [[ $DEBUG_PTVSD == 1 ]] 
+if [ $DEBUG_PTVSD == 1 ]
 then
    echo "Esperando debug attach"
 fi
