@@ -49,16 +49,16 @@ odoo_bash_root: ## Bash en contenedor odoo as root user
 	@docker exec -u root -ti ${CONTAINER_NAME} bash
 
 odoo_shell: ## odoo shell. SINTAXIS: make odoo_shell db={database}
-	@if [-v database]; then docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin shell -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83; fi
+	@if [ -v db ]; then docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin shell -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83; fi
 
 odoo_etc_show: ## Mostrar odoo.conf desde el contenedor de odoo
 	@docker exec -u root -ti ${CONTAINER_NAME} cat /home/odoo/odoo-app/etc/odoo.conf
 
 odoo_update_module: ## odoo actualizar 1 modulo. SINTAXIS: make odoo_update_module db={database} module={nombre}
-	@if [-v database]; then docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83 -u $(module); fi
+	@if [ -v db ]; then docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83 -u $(module); fi
 
 odoo_update_all_modules: ## odoo actualizar todos los módulos. SINTAXIS: make odoo_update_module db={database}
-	@if [-v database]; then docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin -u all -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83; fi
+	@if [ -v db ]; then docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin -u all -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83; fi
 
 odoo_scaffold: ## odoo crear nuevo modulo. SINTAXIS: make odoo_scaffold modulo={modulo}
 	@if [ -v modulo ]; then docker exec -u odoo -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin scaffold /home/odoo/odoo-app/addons_me/${modulo}; fi
