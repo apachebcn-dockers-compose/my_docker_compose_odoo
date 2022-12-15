@@ -48,12 +48,16 @@ fi
 echo ""
 echo "*************************************************************"
 echo "CONTAINER-NAME: $CONTAINER_NAME"
-echo "HOST: $HOST"
-echo "PORT: $PORT"
-echo "USER: $USER"
-echo "PASSWORD: $PASSWORD"
+echo "DB_HOST: $HOST"
+echo "DB_PORT: $PORT"
+echo "DB_USER: $USER"
+echo "DB_PASSWORD: $PASSWORD"
 echo "Using odoo conf: $ODOO_ETC_FILE"
-echo "LISTENING IN PUBLIC PORT: $EXPOSE_PUBLIC_PORT_ODOO"
+echo "ODOO ESCUCHANDO EN PUBLIC PORT: $EXPOSE_PUBLIC_PORT_ODOO"
+if [ $DEBUG_PTVSD == 1 ]
+then
+    echo "PTVSD ESCUCHANDO EN PUBLIC PORT: $EXPOSE_PUBLIC_PORT_DEBUG"
+fi
 echo "*************************************************************"
 echo ""
 
@@ -78,15 +82,7 @@ command="$command --db_host $HOST"
 command="$command --db_port $PORT"
 command="$command --db_user $USER"
 command="$command --db_password $PASSWORD"
-
 echo "exec $command"
-
-if [ $DEBUG_PTVSD == 1 ]
-then
-   echo "Esperando debug attach"
-fi
-
-
 exec $command
 
 exit 1

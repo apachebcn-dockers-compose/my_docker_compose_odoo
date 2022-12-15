@@ -35,6 +35,7 @@ services:
     #command: --dev=all,werkzeug,reload,qweb,xml --log-level=${ODOO_LOG_MODE}
     # command: --dev=werkzeug --log-level=${ODOO_LOG_MODE}
     environment:
+      - EXPOSE_PUBLIC_PORT_DEBUG=${EXPOSE_PUBLIC_PORT_DEBUG}
       - EXPOSE_PUBLIC_PORT_ODOO=${EXPOSE_PUBLIC_PORT_ODOO}
       - DEBUG_PTVSD=${DEBUG_PTVSD}  #El cambio de variables implica hacer docker-compose down y docker-compose up
       - MODE=dev
