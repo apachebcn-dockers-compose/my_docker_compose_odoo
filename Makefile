@@ -49,7 +49,7 @@ odoo_bash_root: ## Bash en contenedor odoo as root user
 	@docker exec -u root -ti ${CONTAINER_NAME} bash
 
 odoo_shell: ## odoo shell. SINTAXIS: make odoo_shell db={database}
-	@if [ -v db ]; then docker exec -u root -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin shell -d ${db} -c /home/odoo/odoo-app/etc/odoo.conf --http-port=83; fi
+	@if [ -v db ]; then docker exec -u odoo -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin shell -d ${db} ; fi
 
 odoo_etc_show: ## Mostrar odoo.conf desde el contenedor de odoo
 	@docker exec -u root -ti ${CONTAINER_NAME} cat /home/odoo/odoo-app/etc/odoo.conf
