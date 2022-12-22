@@ -64,10 +64,10 @@ odoo_scaffold: ## odoo crear nuevo modulo. SINTAXIS: make odoo_scaffold modulo={
 	@if [ -v modulo ]; then docker exec -u odoo -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin scaffold /home/odoo/odoo-app/addons_me/${modulo}; fi
 
 psql_bash: ## Bash en contenedor mysql
-	@docker exec -u postgres -ti ${CONTAINER_NAME}_db bash
+	@docker exec -u postgres -ti ${CONTAINER_NAME}-db bash
 
 psql_shell: ## Bash en contenedor postgresql como user postgres
-	@docker exec -u postgres -ti ${CONTAINER_NAME}_db psql
+	@docker exec -u postgres -ti ${CONTAINER_NAME}-db psql -h 'localhost' -U '${DB_USER}' -d '${DB_PASSWORD}'
 
 psql_backup: ## Backup de mysql
 	@sudo tar cvfz ./db.tar.gz ./volumes/db-data
