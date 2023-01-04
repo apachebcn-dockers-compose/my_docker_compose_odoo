@@ -63,14 +63,17 @@ odoo_update_all_modules: ## odoo actualizar todos los módulos. SINTAXIS: make o
 odoo_scaffold: ## odoo crear nuevo modulo. SINTAXIS: make odoo_scaffold modulo={modulo}
 	@if [ -v modulo ]; then docker exec -u odoo -ti ${CONTAINER_NAME} /home/odoo/odoo-app/odoo-bin scaffold /home/odoo/odoo-app/addons_me/${modulo}; fi
 
-psql_bash: ## Bash en contenedor mysql
+psql_bash: ## Bash en contenedor postgresql
 	@docker exec -u postgres -ti ${CONTAINER_NAME}-db bash
 
 psql_shell: ## Bash en contenedor postgresql como user postgres
 	@docker exec -u postgres -ti ${CONTAINER_NAME}-db psql -h 'localhost' -U '${DB_USER}' -d '${DB_PASSWORD}'
 
-psql_backup: ## Backup de mysql
+psql_backup: ## Backup de postgresql
 	@sudo tar cvfz ./db.tar.gz ./volumes/db-data
+
+psql_import: ## Restore de fichero a postgresql. SINTAXIS:  make psql_import db={database}
+	@docker exec -u postgres -ti ${CONTAINER_NAME}-db psql -h 'localhost' -U '${DB_USER}' -d '${DB_PASSWORD}' -v ON_ERROR_STOP=1 -c ${db} -f /var/lib/postgresql/data/pgdata/dump.sql
 
 fix_folders_permissions: ## Arreglar permisos en carpetas
 	@sudo chmod -R 777 ./volumes/data/odoo-web-data
