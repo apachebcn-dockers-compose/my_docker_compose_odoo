@@ -67,13 +67,13 @@ psql_bash: ## Bash en contenedor postgresql
 	@docker exec -u postgres -ti ${CONTAINER_NAME}-db bash
 
 psql_shell: ## Bash en contenedor postgresql como user postgres
-	@docker exec -u postgres -ti ${CONTAINER_NAME}-db psql -h 'localhost' -U '${DB_USER}' -d '${DB_PASSWORD}'
+	@docker exec -u postgres -ti ${CONTAINER_NAME}-db psql -h 'localhost' --username '${DB_USER}' password '${DB_PASSWORD}'
 
 psql_backup: ## Backup de postgresql
 	@sudo tar cvfz ./db.tar.gz ./volumes/db-data
 
 psql_import: ## Restore de fichero a postgresql. SINTAXIS:  make psql_import db={database}
-	@docker exec -u postgres -ti ${CONTAINER_NAME}-db psql -h 'localhost' -U '${DB_USER}' -d '${DB_PASSWORD}' -v ON_ERROR_STOP=1 -c ${db} -f /var/lib/postgresql/data/pgdata/dump.sql
+	@docker exec -u postgres -ti ${CONTAINER_NAME}-db psql --username=${DB_USER} password={DB_PASSWORD} --dbname=${db} -f /var/lib/postgresql/data/pgdata/dump.sql
 
 fix_folders_permissions: ## Arreglar permisos en carpetas
 	@sudo chmod -R 777 ./volumes/data/odoo-web-data
