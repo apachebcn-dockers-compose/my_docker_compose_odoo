@@ -156,6 +156,9 @@ ARG ODOO_VERSION
 RUN git clone --depth=1 https://github.com/odoo/odoo.git -b ${ODOO_VERSION} ${ODOO_APP_PATH} && rm -rf .git && rm -rf .github
 RUN pip3 install -r /home/odoo/odoo-app/requirements.txt
 RUN mkdir -p "${ODOO_USER_HOME}/odoo-web-data"
+RUN mkdir -p /var/lib/odoo
+RUN mkdir -p /var/lib/odoo/sessions
+
 
 # COPIAR DIRECTORIOS DE ADDONS
 COPY container_volumes ${ODOO_APP_PATH}
