@@ -13,7 +13,7 @@ docker/.env
 docker/docker-compose.override.yml
 docker/docker-compose-traefik.yml
 docker/build/customs_installs/custom_installs.sh
-docker/build/etc/default
+docker/build/etc/default/*
 
 docker/build/customs_installs/customs_installs.sh
 docker/build/customs_installs/requirements.txt
