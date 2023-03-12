@@ -77,3 +77,4 @@ psql_import: ## Restore de fichero a postgresql. SINTAXIS:  make psql_import db=
 
 fix_folders_permissions: ## Arreglar permisos en carpetas
 	@sudo chmod -R 777 ./volumes/data/odoo-web-data
+	@docker exec -u root -ti ${CONTAINER_NAME} chown -R odoo:odoo /home/odoo/odoo-web-data
