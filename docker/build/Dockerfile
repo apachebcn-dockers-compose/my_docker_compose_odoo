@@ -10,8 +10,8 @@ LABEL org.opencontainers.image.authors="apachebcn@gmail.com"
 #####################################################
 #
 # Para adicionar con apt-get, hacerlo en los ficheros:
-#    - docker/build/install_customs.sh
-#    - docker/build/requirements.txt
+#    - docker/build/custom_installs/*
+#    (LEER docker/build/custom_installs/README.txt)
 #
 #####################################################
 
