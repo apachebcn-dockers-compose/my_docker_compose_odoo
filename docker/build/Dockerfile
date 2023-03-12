@@ -94,13 +94,6 @@ RUN pip3 install ptvsd
 # RUN pip3 install ptvsd==4.1.1a10  ptvsd alternativo si falla el normal, pero es mucho más lento
 
 
-########
-# INSTALL CUSTOMS
-#
-########
-COPY customs_installs ${ODOO_APP_PATH}/customs_installs
-RUN if test -e ${ODOO_APP_PATH}/customs_installs/customs_installs.sh; then chmod +x ${ODOO_APP_PATH}/customs_installs/customs_installs.sh ; fi
-RUN if test -e ${ODOO_APP_PATH}/customs_installs/requirements.txt; then pip3 install -r ${ODOO_APP_PATH}/customs_installs/requirements.txt ; fi
 
 
 ########
@@ -161,10 +154,20 @@ USER odoo
 # INSTALAR ODOO
 #
 ########
-RUN rm -R ${ODOO_APP_PATH}
+RUN rm -Rf ${ODOO_APP_PATH}
 ARG ODOO_VERSION
 RUN git clone --depth=1 https://github.com/odoo/odoo.git -b ${ODOO_VERSION} ${ODOO_APP_PATH} && rm -rf .git && rm -rf .github
 RUN pip3 install -r /home/odoo/odoo-app/requirements.txt
+
+
+########
+# INSTALL CUSTOMS
+#
+########
+RUN mkdir ${ODOO_APP_PATH}/customs_installs
+COPY customs_installs ${ODOO_APP_PATH}/customs_installs
+RUN if test -e ${ODOO_APP_PATH}/customs_installs/customs_installs.sh; then chmod +x ${ODOO_APP_PATH}/customs_installs/customs_installs.sh ; fi
+RUN if test -e ${ODOO_APP_PATH}/customs_installs/requirements.txt; then pip3 install -r ${ODOO_APP_PATH}/customs_installs/requirements.txt ; fi
 
 
 # COPIAR DIRECTORIOS DE ADDONS
