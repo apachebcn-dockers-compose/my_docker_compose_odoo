@@ -52,22 +52,26 @@ echo "DB_HOST: $HOST"
 echo "DB_PORT: $PORT"
 echo "DB_USER: $USER"
 echo "DB_PASSWORD: $PASSWORD"
+echo "DEBUG_PTVSD: '$DEBUG_PTVSD'"
 echo "Using odoo conf: $ODOO_ETC_FILE"
 echo "ODOO ESCUCHANDO EN PUBLIC PORT: $EXPOSE_PUBLIC_PORT_ODOO"
-if [ $DEBUG_PTVSD == 1 ]
-then
-    echo "PTVSD ESCUCHANDO EN PUBLIC PORT: $EXPOSE_PUBLIC_PORT_DEBUG"
+
+if [ -n "$DEBUG_PTVSD" ]; then
+    if [ "$DEBUG_PTVSD" -eq 1 ]; then
+        echo "PTVSD ESCUCHANDO EN PUBLIC PORT: $EXPOSE_PUBLIC_PORT_DEBUG"
+    fi
 fi
+
 echo "*************************************************************"
 echo ""
 
 
 odoobin="/home/odoo/odoo-app/odoo-bin"
-if [ $DEBUG_PTVSD == 1 ]
-then
-    odoobin="/home/odoo/odoo-app/odoo-bin-debug"
+if [ -n "$DEBUG_PTVSD" ]; then
+    if [ "$DEBUG_PTVSD" -eq 1 ]; then
+        odoobin="/home/odoo/odoo-app/odoo-bin-debug"
+    fi
 fi
-
 
 command="$odoobin $@"
 if [ -f $ODOO_ETC_FILE ]

@@ -35,7 +35,7 @@ RUN set -x; apt-get install -y \
     git \
     libxml2-dev \
     libsasl2-dev \
-    python-dev \
+    python3 \
     libldap2-dev \
     libxmlsec1-dev \
     libssl-dev \
@@ -69,6 +69,7 @@ RUN pip3 install pyOpenSSL
 RUN pip3 install qrcode
 RUN pip3 install vobject
 RUN pip3 install xlrd
+RUN pip3 install openpyxl
 RUN pip3 install xlwt
 RUN pip3 install xmlsig
 RUN pip3 install zeep
@@ -141,6 +142,16 @@ RUN echo "odoo:odoo" | chpasswd
 
 
 ########
+# PREPARAR DIRECTORIOS
+#
+########
+RUN mkdir -p "${ODOO_USER_HOME}/odoo-web-data"
+RUN mkdir -p /var/lib/odoo
+RUN mkdir -p /var/lib/odoo/sessions
+RUN chown -R odoo:odoo /var/lib/odoo
+
+
+########
 # ENTRAR COMO USUARIO ODOO
 #
 ########
@@ -154,8 +165,8 @@ USER odoo
 RUN rm -R ${ODOO_APP_PATH}
 ARG ODOO_VERSION
 RUN git clone --depth=1 https://github.com/odoo/odoo.git -b ${ODOO_VERSION} ${ODOO_APP_PATH} && rm -rf .git && rm -rf .github
+RUN pip3 install --upgrade pip
 RUN pip3 install -r /home/odoo/odoo-app/requirements.txt
-RUN mkdir -p "${ODOO_USER_HOME}/odoo-web-data"
 
 # COPIAR DIRECTORIOS DE ADDONS
 COPY container_volumes ${ODOO_APP_PATH}

@@ -1,6 +1,10 @@
-# Docker compose para Odoo (Desarrollo y Producción)
+### ¿Que es este repositorio?
 
-Por Pedro Reina Rojas (apachebcn@gmail.com)
+Este repositorio te permitirá desplegar **Odoo** es una suite de aplicaciones de gestión empresarial que incluye una gama de herramientas de fácil uso para optimizar y rentabilizar los negocios. Su objetivo es englobar en un único software todas las herramientas que necesita una empresa para la operativa en todos los principales departamentos. En este sentido, Odoo nos ofrece funcionalidades que podrían encajar tanto en un software ERP como en un software CRM.
+
+
+
+# Docker compose para Odoo (Desarrollo y Producción)
 
 
 
@@ -9,32 +13,17 @@ Por Pedro Reina Rojas (apachebcn@gmail.com)
 Características para el entorno Docker:
 
 - Versión de odoo seleccionable en fichero .env
-
 - Versión de postgresql en fichero .env
-
-- docker-compose-traefik.yml es detectado y ejecutado automáticamente vía Makefile
-
-- PgAdmin 4 (opcional desde docker-compose)
-
 - Cambio automático entre DEV/PROD desde comando Makefile
-
 - docker-compose  independiente para los modos Dev/Prod
-
 - Instalaciones adicionales desde docker/build/customs_installs/customs_installs.sh y docker/build/customs_installs/requirements.txt
-
 - Entrada rápida a bash del contenedor Odoo y Odoo-shell (desde Makefile)
-
 - Ptvsd activable desde fichero .env
-
 - ~~Jupyter~~ (pendiente)
-
 - DevContainer
-
   
 
-  
-
-## ¿Por que Odoo en Odoo?
+## ¿Por que Odoo en Docker?
 
 Porque Docker nos permite una gran movilidad, simpliciad, y rapidez en el despliegue de nuestros proyectos en cualquier servidor.<br>
 También nos simplifica el hacer un backup de todo el entorno, o clonarlo en cualquier lugar (Proyecto, configuración, base de datos, y todo el entorno completo)
@@ -66,9 +55,9 @@ Creamos o editamos los ficheros para instalaciones adicionales:
 
 - docker/build/customs_installs/customs_installs.sh
   - insertamos lineas de apt-get (ejemplo: apt-get install git)
-
-- docker/build/customs_installs/requirements.txt
   - insertamos lineas de pip o pip3 install
+  
+- docker/build/customs_installs/requirements.txt (con el formato conocido del requirements usado por python)
 
 *Estos ficheros están en .gitignore para que el repositorio no lo recoga los cambios producidos por el usuario, ya que estos determinan la configuración local del proyecto del usuario.*<br>
 *Así que cuando hagamos un "git pull" a este repositorio, no habrá problemas ni conflictos por los cambios en este fichero.*
@@ -82,9 +71,10 @@ Abrimos el fichero **docker/.env** (si no existe, lo copiamos de **docker/.env.d
 Y lo configuramos:
 
 ```
-COMPOSE_PROJECT_NAME=my-odoo
-CONTAINER_NAME=my-odoo
-ODOO_HOSTNAME=my_odoo.localhost
+COMPOSE_PROJECT_NAME=odoo-hiveagile-dev
+CONTAINER_NAME=odoo-hiveagile-dev
+ODOO_HOSTNAME=odoo.hiveagile.dev
+ODOO_TRAEFIK_HOSTNAME=odoo.hiveagile.dev
 
 # ODOO_LOG_MODE: El nivel de log de odoo, y que por defecto va a mostrar por consola
 # puede ser -> 'info', 'debug_rpc', 'warn', 'test', 'critical', 'debug_sql', 'error', 'debug', 'debug_rpc_answer', 'notset'
@@ -108,7 +98,7 @@ DB_PASSWORD=odoo
 EXPOSE_PUBLIC_PORT_ODOO=6069
 EXPOSE_PUBLIC_PORT_DB=6432
 EXPOSE_PUBLIC_PORT_DEBUG=3001
-EXPOSE_PUBLIC_PGADMIN_PORT=4444
+
 ```
 
 
@@ -127,17 +117,22 @@ Entonces tendremos que seleccionar el modo (make dev ó make prod)
 
 #### Preparar odoo.conf
 
-Si es la primera vez que usamos este proyecto docker, vamos a copiar
+Si es la primera vez que usamos este proyecto docker
+Si es la copia de otro proyecto pero queremos reinicializar su configuración
 
-docker/build/etc/default
-a
-docker/build/etc
+```
+make config_reset
+```
 
-y editamos los ficheros odoo.dev.conf  y odoo.prod.conf
+y editamos los ficheros:
 
-Cuando docker arranca el contendor, se encarga de copiar (el modo seleccionado determina cual de los 2 ficheros copia)  al contenedor como /etc/odoo.conf
+- docker/build/etc/odoo.dev.conf
+- docker/build/etc/odoo.prod.conf
+- docker/.env
 
-Si estos ficheros no existen, veremos en consola el siguiente error:
+Al editar los 2 primeros, es necesario recrear la compilación de docker (make up_build)
+
+Si alguno de estos ficheros no existen, veremos en consola avisos como este:
 
 ```
 | ************************************************************************** 
@@ -229,50 +224,110 @@ Se debe a que no hemos generado el fichero **docker/build/etc/odoo.dev.conf** o 
 
 El comando make nos sirve para ahorrarnos un montón de comandos de uso frecuente.
 
-- make start<br>
-  Ejecuta docker-compose start 
-- make stop<br>
-  Ejecuta docker-compose stop
-- make up<br>
-  Ejecuta docker-compose up (adjunta automaticamente docker-compose-traefik.yml) 
-- make down<br>
-  Ejecuta docker-compose down 
-- make up_build<br>
-  Ejecuta docker-compose up --build 
-- make ps<br>
-  Ejecuta docker-compose ps 
-- make log<br>
-  Ejecuta docker-compose logs -f --tail=1000 
-- make dev<br>
-  Compila y arranca en modo dev 
-- make prod<br>
-  Compila y arranca en modo prod 
-- make odoo_bash<br>
-  Bash en contenedor odoo como user odoo 
-- make odoo_bash_as_root<br>
-  Bash en contenedor odoo como user root 
-- make odoo_shell<br>
-  Shell  odoo en el contenedor de odoo<br>make odoo_shell db={database} 
-- make odoo_etc_show
-  Ver el fichero odoo.conf 
-- make odoo_update_module<br>
-  Update de un módulo <br>
-  make odoo_update_module db={database} module={nombre}<br>
-- make odoo_update_all_modules<br>
-  Update de todos los módulos de odoo<br>
-  make odoo_update_module db={database}
-- make odoo_scaffold:<br>
-  crear nuevo módulo con toda la estructura de ficheros<br>
-  odoo crear nuevo modulo db={database}
-- make psql_bash<br>
-  Bash en el contenedor postgresql como user postgres
+- dev
+  cambia los links a modo dev
+  *Sintaxis: make dev*
 
-- make psql_shell<br>
-  Shell en el contenedor postgresql como user postgres 
-- make psql_backup<br>
-  Crea una copia de /volumes/db-data en formato tar.gz 
-- make fix_folders_permissions<br>
-  Arreglar permisos en carpetas
+- prod
+  cambia los links a modo prod
+  *Sintaxis: make prod*
+
+- start:
+  Ejecuta docker-compose start
+  *Sintaxis: make start*
+
+- stop:
+  Ejecuta docker-compose stop
+  *Sintaxis: make stop*
+
+- up:
+  Ejecuta docker-compose up
+  *Sintaxis: make up*
+
+- up_build:
+  Ejecuta docker-compose build & docker-compose up
+  *Sintaxis: make up_build*
+	@cd docker && docker-compose -f docker-compose.yml up
+
+- down:
+  Ejecuta docker-compose down
+  *Sintaxis: make down*
+
+- log:
+  Ejecuta docker-compose log
+  *Sintaxis: make log*
+
+- ps:
+  Ejecuta docker-compose ps
+  *Sintaxis: make ps*
+
+- fix_folders_permissions: ## Arreglar permisos en carpetas
+	@sudo chmod -R 777 ./volumes/data/odoo-web-data
+	@docker exec -u root -ti ${CONTAINER_NAME} chown -R odoo:odoo /home/odoo/odoo-web-data
+
+- config_show:
+  Mostrar configuración. fichero '.env'(Docker) y fichero 'odoo.conf'(Contenedor)
+  *Sintaxis: make config_show*
+
+- config_reset:
+  Resetear configuración. fichero '.env'(Docker) y fichero 'odoo.conf'(Contenedor)
+  *Sintaxis: make config_reset*
+
+- config_remove:
+  Eliminar configuración. fichero '.env'(Docker) y fichero 'odoo.conf'(Contenedor)
+  *Sintaxis: make config_remove*
+
+- volume_dbs_backup:
+  Backup del contenido de la carpeta postgresql
+  *Sintaxis: make dbs_backup*
+
+- container_odoo_bash:
+  Bash en contenedor odoo
+	*Sintaxis: @docker exec -u odoo -ti ${CONTAINER_NAME} bash*
+
+- container_odoo_bash_root:
+  Bash en contenedor odoo as root user
+	*Sintaxis: @docker exec -u root -ti ${CONTAINER_NAME} bash*
+
+- container_odoo_shell:
+  Entrar en el shell de odoo(Container como user odoo)
+  *Sintaxis: make container_odoo_shell db={database}*
+
+- container_odoo_update_module:
+  odoo actualizar 1 modulo.
+  *Sintaxis: make container_odoo_update_module db={database} module={nombre}*
+
+- container_odoo_update_all_modules:
+  odoo actualizar todos los módulos.
+  *Sintaxis: make container_odoo_update_module db={database}*
+
+- container_odoo_scaffold:
+  odoo crear nuevo modulo.
+  *Sintaxis: make container_odoo_scaffold modulo={modulo}*
+
+- container_psql_bash:
+  Bash del contenedor postgresql
+  *Sintaxis: make container_psql_bash*
+
+- container_psql_shell:
+  Entrar en el shell postgresql (Container como user postgres)
+  *Sintaxis: make container_psql_shell*
+
+- container_psql_db_create:
+  Crea base de datos en psql
+  *Sintaxis: make container_psql_db_create db={database}*
+
+- container_psql_db_remove:
+  Elimina base de datos en psql
+  *Sintaxis: make container_psql_db_remove db={database}*
+
+- container_psql_import:
+  Importa fichero /volumes/data/db-data/import_dump.sql a la base de datos {db} de postgresql
+  *Sintaxis: make container_psql_import db={database}*
+
+- container_psql_export:
+  Exporta base de datos {db} de postgresql a fichero /volumes/data/db-data/export_dump.sql
+  *Sintaxis: make container_psql_import db={database}*
 
 
 
@@ -400,3 +455,40 @@ Cuando Visual Studio Code se abre en modo 'devcontainer', hace lo siguiente<br>
 En conjunto, devcontainer nos ofrece un entorno completo tal como se define en devcontainer.json.<br>
 
 Y el resultado final es como si alguien te estuviese prestando su entorno de trabajo, tal como lo está usando en su día a día.
+
+## USO
+Este docker funciona de una forma diferente para que funcione debes ejecutar los siguientes comandos:
+
+```
+cd /root/containers/odoo
+make prod
+make up
+```
+Si encuentras mensajes de error que se refieren a problemas de permisos, detener el Docker y ejecutar:
+
+```
+make fix_folders_permissions
+make up
+```
+
+
+
+### Master password
+
+La master password por defecto es: `ifq5mLGCBM5dt87`
+
+
+## Actualizaciones automáticas (Opcional)
+
+Puedes usar watchtower que actualiza todos los contenedores que estan como latest
+
+Esto es algo que pongo en todas las aplicaciones pero no hace falta que se instale cada vez.
+
+```
+docker run -d \
+    --name watchtower \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    containrrr/watchtower -i 30
+```
+
+
